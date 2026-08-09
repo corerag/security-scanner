@@ -23,6 +23,14 @@ def summarize_report(report: ScanReport) -> str:
         f"OS:            {report.os_platform} ({report.os_version})",
         f"Agent version: {report.agent_version}",
         f"Scan window:   {report.scan_started_at} -> {report.scan_completed_at}",
+    ]
+
+    if report.ai_summary:
+        lines.append("")
+        lines.append("AI TRIAGE SUMMARY (advisory only - a human should verify before acting):")
+        lines.append(report.ai_summary)
+
+    lines.extend([
         "",
         "Summary:",
         f"  Processes observed:          {len(report.processes)}",
@@ -31,7 +39,7 @@ def summarize_report(report: ScanReport) -> str:
         f"  Scheduled tasks:              {len(report.persistence.scheduled_tasks)}",
         f"  Startup folder items:        {len(report.persistence.startup_items)}",
         f"  Files hashed:                {len(report.file_hashes)}",
-    ]
+    ])
     if vt_checked:
         lines.append(f"  VirusTotal hashes checked:    {len(vt_checked)}")
         lines.append(f"  VirusTotal-flagged malicious: {len(vt_flagged)}")

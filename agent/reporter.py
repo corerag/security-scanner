@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from common.schemas import PersistenceReport, ScanReport
 
 from . import config
+from .ai_triage import generate_ai_summary
 from .collectors.file_hashes import hash_paths
 from .collectors.network import collect_network_connections
 from .collectors.persistence import collect_persistence
@@ -57,7 +58,7 @@ def build_report(cfg: config.AgentConfig | None = None) -> ScanReport:
 
     completed_at = datetime.now(timezone.utc)
 
-    return ScanReport(
+    report = ScanReport(
         scan_id=str(uuid.uuid4()),
         hostname=socket.gethostname(),
         os_platform=platform.system(),
@@ -73,3 +74,9 @@ def build_report(cfg: config.AgentConfig | None = None) -> ScanReport:
         persistence=persistence,
         file_hashes=file_hashes,
     )
+
+    ai_summary = generate_ai_summary(report, cfg.anthropic_api_key)
+    if ai_summary:
+        report = report.model_copy(update={"ai_summary": ai_summary})
+
+    return report

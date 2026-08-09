@@ -82,3 +82,23 @@ def test_load_config_reads_virustotal_api_key_when_set(monkeypatch):
     cfg = config.load_config()
 
     assert cfg.virustotal_api_key == "vt-secret"
+
+
+def test_load_config_anthropic_api_key_defaults_to_none(monkeypatch):
+    monkeypatch.setenv("OWNER_EMAIL", "owner@example.com")
+    monkeypatch.setenv("API_KEY", "k")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+
+    cfg = config.load_config()
+
+    assert cfg.anthropic_api_key is None
+
+
+def test_load_config_reads_anthropic_api_key_when_set(monkeypatch):
+    monkeypatch.setenv("OWNER_EMAIL", "owner@example.com")
+    monkeypatch.setenv("API_KEY", "k")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-secret")
+
+    cfg = config.load_config()
+
+    assert cfg.anthropic_api_key == "sk-ant-secret"

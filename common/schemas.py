@@ -103,6 +103,12 @@ class ScanReport(BaseModel):
     owner_name: str | None = None
     notes: str | None = None
 
+    # Optional plain-English triage summary from an LLM (agent/ai_triage.py).
+    # Advisory only - explains findings for a human to review, never a
+    # malicious/benign determination. None when ANTHROPIC_API_KEY is not
+    # configured or the summary call failed.
+    ai_summary: str | None = None
+
     processes: list[ProcessInfo] = Field(default_factory=list)
     network_connections: list[NetworkConnectionInfo] = Field(default_factory=list)
     persistence: PersistenceReport = Field(default_factory=PersistenceReport)

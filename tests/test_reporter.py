@@ -16,6 +16,9 @@ def test_build_report_produces_valid_report():
     # step must be skipped (no network calls, fields left unset).
     assert all(entry.vt_malicious_count is None for entry in report.file_hashes)
 
+    # Likewise no ANTHROPIC_API_KEY is set, so AI triage must be skipped.
+    assert report.ai_summary is None
+
 
 def test_build_report_enriches_file_hashes_with_virustotal(monkeypatch):
     from common.schemas import FileHashEntry
@@ -42,3 +45,28 @@ def test_build_report_enriches_file_hashes_with_virustotal(monkeypatch):
     assert len(report.file_hashes) == 1
     assert report.file_hashes[0].vt_malicious_count == 2
     assert report.file_hashes[0].vt_total_engines == 70
+
+
+def test_build_report_attaches_ai_summary(monkeypatch):
+    cfg = config.load_config()
+    cfg.anthropic_api_key = "test-anthropic-key"
+
+    monkeypatch.setattr(
+        "agent.reporter.generate_ai_summary",
+        lambda report, api_key: "Consider reviewing the flagged binary." if api_key else None,
+    )
+
+    report = build_report(cfg)
+
+    assert report.ai_summary == "Consider reviewing the flagged binary."
+
+
+def test_build_report_leaves_ai_summary_unset_when_generator_returns_none(monkeypatch):
+    cfg = config.load_config()
+    cfg.anthropic_api_key = "test-anthropic-key"
+
+    monkeypatch.setattr("agent.reporter.generate_ai_summary", lambda report, api_key: None)
+
+    report = build_report(cfg)
+
+    assert report.ai_summary is None

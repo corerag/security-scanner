@@ -48,6 +48,10 @@ class AgentConfig:
     # Lookups are skipped entirely when this is unset.
     virustotal_api_key: str | None = None
 
+    # Optional AI triage summary via the Anthropic API (agent/ai_triage.py).
+    # Skipped entirely when this is unset.
+    anthropic_api_key: str | None = None
+
     # "server" mode
     server_url: str = "http://127.0.0.1:8000"
     api_key: str = ""
@@ -111,6 +115,7 @@ def load_config() -> AgentConfig:
         hash_process_executables=os.getenv("HASH_PROCESS_EXECUTABLES", "false").lower() == "true",
         request_timeout=int(os.getenv("REQUEST_TIMEOUT_SECONDS", "30")),
         virustotal_api_key=os.getenv("VIRUSTOTAL_API_KEY") or None,
+        anthropic_api_key=os.getenv("ANTHROPIC_API_KEY") or None,
         server_url=server_url.rstrip("/"),
         api_key=api_key,
         admin_email=admin_email,
