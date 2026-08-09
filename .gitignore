@@ -5,3 +5,9 @@ __pycache__/
 *.pyc
 reports/*.json
 .pytest_cache/
+.ruff_cache/
+
+# PyInstaller build output (build the .exe locally; see README "Portable agent")
+build/
+dist/
+*.spec
