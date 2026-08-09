@@ -14,6 +14,7 @@ from .collectors.network import collect_network_connections
 from .collectors.persistence import collect_persistence
 from .collectors.processes import collect_processes
 from .collectors.utils import extract_executable_path
+from .virustotal import enrich_with_virustotal
 
 AGENT_VERSION = "1.0.0"
 
@@ -52,6 +53,7 @@ def build_report(cfg: config.AgentConfig | None = None) -> ScanReport:
     if cfg.hash_process_executables:
         hash_targets = sorted(set(hash_targets) | {p.exe for p in processes if p.exe})
     file_hashes = hash_paths(hash_targets)
+    file_hashes = enrich_with_virustotal(file_hashes, cfg.virustotal_api_key)
 
     completed_at = datetime.now(timezone.utc)
 

@@ -62,3 +62,23 @@ def test_load_config_rejects_invalid_delivery_mode(monkeypatch):
 
     with pytest.raises(RuntimeError, match="DELIVERY_MODE"):
         config.load_config()
+
+
+def test_load_config_virustotal_api_key_defaults_to_none(monkeypatch):
+    monkeypatch.setenv("OWNER_EMAIL", "owner@example.com")
+    monkeypatch.setenv("API_KEY", "k")
+    monkeypatch.delenv("VIRUSTOTAL_API_KEY", raising=False)
+
+    cfg = config.load_config()
+
+    assert cfg.virustotal_api_key is None
+
+
+def test_load_config_reads_virustotal_api_key_when_set(monkeypatch):
+    monkeypatch.setenv("OWNER_EMAIL", "owner@example.com")
+    monkeypatch.setenv("API_KEY", "k")
+    monkeypatch.setenv("VIRUSTOTAL_API_KEY", "vt-secret")
+
+    cfg = config.load_config()
+
+    assert cfg.virustotal_api_key == "vt-secret"

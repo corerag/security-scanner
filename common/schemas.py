@@ -79,6 +79,12 @@ class FileHashEntry(BaseModel):
     exists: bool = True
     error: str | None = None
 
+    # Optional VirusTotal enrichment (agent/virustotal.py). Left as None
+    # when VIRUSTOTAL_API_KEY is not configured or the hash wasn't looked up.
+    vt_malicious_count: int | None = None
+    vt_total_engines: int | None = None
+    vt_error: str | None = None
+
 
 # --------------------------------------------------------------------------
 # Top-level report

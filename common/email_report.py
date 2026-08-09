@@ -14,6 +14,9 @@ from .schemas import ScanReport
 
 
 def summarize_report(report: ScanReport) -> str:
+    vt_checked = [entry for entry in report.file_hashes if entry.vt_malicious_count is not None]
+    vt_flagged = [entry for entry in vt_checked if entry.vt_malicious_count]
+
     lines = [
         f"Security scan report for host: {report.hostname}",
         f"Scan ID:       {report.scan_id}",
@@ -29,6 +32,9 @@ def summarize_report(report: ScanReport) -> str:
         f"  Startup folder items:        {len(report.persistence.startup_items)}",
         f"  Files hashed:                {len(report.file_hashes)}",
     ]
+    if vt_checked:
+        lines.append(f"  VirusTotal hashes checked:    {len(vt_checked)}")
+        lines.append(f"  VirusTotal-flagged malicious: {len(vt_flagged)}")
 
     missing = [entry for entry in report.file_hashes if not entry.exists]
     if missing:
@@ -37,6 +43,17 @@ def summarize_report(report: ScanReport) -> str:
         lines.extend(f"  - {entry.path}" for entry in missing[:20])
         if len(missing) > 20:
             lines.append(f"  ... and {len(missing) - 20} more")
+
+    if vt_flagged:
+        lines.append("")
+        lines.append(f"WARNING: {len(vt_flagged)} file(s) flagged as malicious by VirusTotal:")
+        for entry in vt_flagged[:20]:
+            lines.append(
+                f"  - {entry.path} - {entry.vt_malicious_count}/{entry.vt_total_engines} "
+                f"engines (sha256={entry.sha256})"
+            )
+        if len(vt_flagged) > 20:
+            lines.append(f"  ... and {len(vt_flagged) - 20} more")
 
     if report.notes:
         lines.append("")
