@@ -212,6 +212,14 @@ pyinstaller --onefile --console --name security-scan-agent `
   build artifacts — safe to ignore or delete after the build. All three
   are git-ignored; the .exe is a build output, not something to commit.
 
+CI also runs this same build on every push to `main` (job `build-exe` in
+`.github/workflows/ci.yml`, after lint/tests pass) and uploads the result
+as a workflow artifact named `security-scan-agent-windows`. If you just
+want the latest build rather than building locally, grab it from that
+run's **Artifacts** section on the
+[Actions tab](https://github.com/corerag/security-scanner/actions)
+(kept for 14 days) — same unsigned-.exe caveat below applies.
+
 ### 2. Prepare the USB drive
 
 Copy two files onto the drive, in the same folder:
