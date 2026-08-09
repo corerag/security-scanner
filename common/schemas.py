@@ -6,7 +6,6 @@ place means the two sides can never silently drift apart.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -16,27 +15,27 @@ from pydantic import BaseModel, EmailStr, Field
 # --------------------------------------------------------------------------
 class ProcessInfo(BaseModel):
     pid: int
-    ppid: Optional[int] = None
+    ppid: int | None = None
     name: str
-    exe: Optional[str] = None
-    cmdline: Optional[str] = None
-    username: Optional[str] = None
-    status: Optional[str] = None
-    create_time: Optional[datetime] = None
+    exe: str | None = None
+    cmdline: str | None = None
+    username: str | None = None
+    status: str | None = None
+    create_time: datetime | None = None
 
 
 # --------------------------------------------------------------------------
 # Network
 # --------------------------------------------------------------------------
 class NetworkConnectionInfo(BaseModel):
-    fd: Optional[int] = None
-    family: Optional[str] = None
-    type: Optional[str] = None
-    local_address: Optional[str] = None
-    remote_address: Optional[str] = None
-    status: Optional[str] = None
-    pid: Optional[int] = None
-    process_name: Optional[str] = None
+    fd: int | None = None
+    family: str | None = None
+    type: str | None = None
+    local_address: str | None = None
+    remote_address: str | None = None
+    status: str | None = None
+    pid: int | None = None
+    process_name: str | None = None
 
 
 # --------------------------------------------------------------------------
@@ -46,16 +45,16 @@ class RegistryRunKeyEntry(BaseModel):
     hive: str
     key_path: str
     value_name: str
-    value_data: Optional[str] = None
+    value_data: str | None = None
 
 
 class ScheduledTaskEntry(BaseModel):
     name: str
-    status: Optional[str] = None
-    next_run_time: Optional[str] = None
-    command: Optional[str] = None
-    author: Optional[str] = None
-    run_as_user: Optional[str] = None
+    status: str | None = None
+    next_run_time: str | None = None
+    command: str | None = None
+    author: str | None = None
+    run_as_user: str | None = None
 
 
 class StartupItemEntry(BaseModel):
@@ -75,10 +74,10 @@ class PersistenceReport(BaseModel):
 # --------------------------------------------------------------------------
 class FileHashEntry(BaseModel):
     path: str
-    sha256: Optional[str] = None
-    size_bytes: Optional[int] = None
+    sha256: str | None = None
+    size_bytes: int | None = None
     exists: bool = True
-    error: Optional[str] = None
+    error: str | None = None
 
 
 # --------------------------------------------------------------------------
@@ -95,8 +94,8 @@ class ScanReport(BaseModel):
     scan_completed_at: datetime
 
     owner_email: EmailStr
-    owner_name: Optional[str] = None
-    notes: Optional[str] = None
+    owner_name: str | None = None
+    notes: str | None = None
 
     processes: list[ProcessInfo] = Field(default_factory=list)
     network_connections: list[NetworkConnectionInfo] = Field(default_factory=list)

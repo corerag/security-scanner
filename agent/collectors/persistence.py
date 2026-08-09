@@ -102,14 +102,17 @@ def collect_scheduled_tasks() -> list[ScheduledTaskEntry]:
     return tasks
 
 
+_STARTUP_SUBPATH = r"Microsoft\Windows\Start Menu\Programs\Startup"
+
+
 def _startup_folders() -> list[tuple[str, str]]:
     folders: list[tuple[str, str]] = []
     appdata = os.environ.get("APPDATA")
     if appdata:
-        folders.append(("user", os.path.join(appdata, r"Microsoft\Windows\Start Menu\Programs\Startup")))
+        folders.append(("user", os.path.join(appdata, _STARTUP_SUBPATH)))
     programdata = os.environ.get("PROGRAMDATA")
     if programdata:
-        folders.append(("common", os.path.join(programdata, r"Microsoft\Windows\Start Menu\Programs\Startup")))
+        folders.append(("common", os.path.join(programdata, _STARTUP_SUBPATH)))
     return folders
 
 

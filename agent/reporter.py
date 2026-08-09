@@ -6,14 +6,14 @@ import socket
 import uuid
 from datetime import datetime, timezone
 
-from common.schemas import ScanReport, PersistenceReport
+from common.schemas import PersistenceReport, ScanReport
 
+from . import config
 from .collectors.file_hashes import hash_paths
 from .collectors.network import collect_network_connections
 from .collectors.persistence import collect_persistence
 from .collectors.processes import collect_processes
 from .collectors.utils import extract_executable_path
-from . import config
 
 AGENT_VERSION = "1.0.0"
 

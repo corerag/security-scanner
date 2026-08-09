@@ -40,7 +40,12 @@ def health() -> dict:
     return {"status": "ok"}
 
 
-@app.post("/api/v1/reports", response_model=ReportAck, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_api_key)])
+@app.post(
+    "/api/v1/reports",
+    response_model=ReportAck,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_api_key)],
+)
 def receive_report(report: ScanReport) -> ReportAck:
     saved_path = storage.save_report(report, cfg.storage_dir)
     logger.info("Stored report %s for host %s at %s", report.scan_id, report.hostname, saved_path)
